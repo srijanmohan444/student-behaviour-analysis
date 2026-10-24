@@ -1,0 +1,182 @@
+[
+  {
+    "name": "Aanya Sharma",
+    "course": "B.Tech Information Technology",
+    "year": "4th Year",
+    "sample_handle": "@aanya_demo",
+    "source": "Fictional local sample",
+    "bio": "Interested in coding, campus events and design.",
+    "posts": [
+      {
+        "platform": "Campus Social (demo)",
+        "date": "2026-09-18",
+        "text": "Finished my Python project today. Happy with the progress and excited to learn more about AI.",
+        "likes": 34,
+        "comments": 6
+      },
+      {
+        "platform": "Campus Social (demo)",
+        "date": "2026-09-12",
+        "text": "Our team worked together on the college tech event. Great experience and helpful friends.",
+        "likes": 28,
+        "comments": 4
+      },
+      {
+        "platform": "Photo Feed (demo)",
+        "date": "2026-09-04",
+        "text": "Enjoying music and beautiful photos after a long week of lectures.",
+        "likes": 41,
+        "comments": 8
+      },
+      {
+        "platform": "Campus Social (demo)",
+        "date": "2026-08-28",
+        "text": "The assignment was difficult, and I felt stressed, but I completed it.",
+        "likes": 19,
+        "comments": 3
+      },
+      {
+        "platform": "Photo Feed (demo)",
+        "date": "2026-08-19",
+        "text": "A fun day with friends at the community volunteering event.",
+        "likes": 37,
+        "comments": 7
+      }
+    ]
+  },
+  {
+    "name": "Rohan Verma",
+    "course": "B.Tech Information Technology",
+    "year": "4th Year",
+    "sample_handle": "@rohan_demo",
+    "source": "Fictional local sample",
+    "bio": "Enjoys sports, programming and team projects.",
+    "posts": [
+      {
+        "platform": "Campus Social (demo)",
+        "date": "2026-09-20",
+        "text": "Our coding project had a problem today, but we found a good solution as a team.",
+        "likes": 23,
+        "comments": 5
+      },
+      {
+        "platform": "Photo Feed (demo)",
+        "date": "2026-09-15",
+        "text": "Great cricket match and a fun evening with friends.",
+        "likes": 52,
+        "comments": 11
+      },
+      {
+        "platform": "Campus Social (demo)",
+        "date": "2026-09-09",
+        "text": "Studying for exams. The pressure is hard, but steady progress matters.",
+        "likes": 16,
+        "comments": 2
+      },
+      {
+        "platform": "Campus Social (demo)",
+        "date": "2026-08-30",
+        "text": "Learned a new Python concept in lab and made an awesome little app.",
+        "likes": 29,
+        "comments": 7
+      },
+      {
+        "platform": "Photo Feed (demo)",
+        "date": "2026-08-17",
+        "text": "Music, football and a peaceful weekend. Feeling good.",
+        "likes": 46,
+        "comments": 9
+      }
+    ]
+  },
+  {
+    "name": "Meera Patel",
+    "course": "B.Tech Information Technology",
+    "year": "4th Year",
+    "sample_handle": "@meera_demo",
+    "source": "Fictional local sample",
+    "bio": "Interested in reading, art and student community events.",
+    "posts": [
+      {
+        "platform": "Campus Social (demo)",
+        "date": "2026-09-22",
+        "text": "Proud of our design project. We learned a lot and the final result looks amazing.",
+        "likes": 38,
+        "comments": 8
+      },
+      {
+        "platform": "Photo Feed (demo)",
+        "date": "2026-09-14",
+        "text": "Finished a great book and spent the evening listening to music.",
+        "likes": 44,
+        "comments": 10
+      },
+      {
+        "platform": "Campus Social (demo)",
+        "date": "2026-09-07",
+        "text": "Volunteering with the college community was a helpful and beautiful experience.",
+        "likes": 31,
+        "comments": 6
+      },
+      {
+        "platform": "Campus Social (demo)",
+        "date": "2026-08-25",
+        "text": "I am worried about the exam, but the study group makes the work easier.",
+        "likes": 21,
+        "comments": 4
+      },
+      {
+        "platform": "Photo Feed (demo)",
+        "date": "2026-08-16",
+        "text": "Sharing art and photos from our campus event. Happy weekend!",
+        "likes": 36,
+        "comments": 5
+      }
+    ]
+  },
+  {
+    "name": "Kabir Khan",
+    "course": "B.Tech Information Technology",
+    "year": "4th Year",
+    "sample_handle": "@kabir_demo",
+    "source": "Fictional local sample",
+    "bio": "Likes fitness, technology and building useful apps.",
+    "posts": [
+      {
+        "platform": "Campus Social (demo)",
+        "date": "2026-09-23",
+        "text": "Built a small software app for our lab. Excited about the progress.",
+        "likes": 26,
+        "comments": 4
+      },
+      {
+        "platform": "Photo Feed (demo)",
+        "date": "2026-09-16",
+        "text": "Gym session, running and a good workout to reset for the week.",
+        "likes": 33,
+        "comments": 3
+      },
+      {
+        "platform": "Campus Social (demo)",
+        "date": "2026-09-08",
+        "text": "The project deadline was hard and stressful, but we finished the main features.",
+        "likes": 18,
+        "comments": 6
+      },
+      {
+        "platform": "Campus Social (demo)",
+        "date": "2026-08-29",
+        "text": "Our team made an awesome AI demo in computer lab. Great learning experience.",
+        "likes": 42,
+        "comments": 12
+      },
+      {
+        "platform": "Photo Feed (demo)",
+        "date": "2026-08-18",
+        "text": "Football with friends. A fun match and a beautiful evening.",
+        "likes": 47,
+        "comments": 8
+      }
+    ]
+  }
+]

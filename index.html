@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Behaviour Analysis | Social Media Lab</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">SA</div>
+        <div><strong>SocialScope</strong><small>Student Analytics Lab</small></div>
+      </div>
+      <div class="nav-label">WORKSPACE</div>
+      <a class="nav-item active" href="#"><span>▦</span> Overview</a>
+      <a class="nav-item" href="#profile"><span>◉</span> Student profile</a>
+      <a class="nav-item" href="#posts"><span>▤</span> Post analysis</a>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h1>Student Behaviour Analysis</h1>
+        </div>
+        <div class="avatar">IT</div>
+      </header>
+
+      <section class="search-panel">
+        <div class="search-copy">
+          <div class="search-icon">⌕</div>
+          <div>
+            <h2>Find a student</h2>
+            <p>Search the local demonstration dataset by name.</p>
+          </div>
+        </div>
+        <form id="searchForm">
+          <label class="sr-only" for="studentName">Student name</label>
+          <input id="studentName" name="name" placeholder="e.g. Aanya Sharma" autocomplete="off">
+          <button type="submit">Analyse student <span>→</span></button>
+        </form>
+        <div class="quick-search"><span>Try a sample:</span>
+          {% for s in students %}
+          <button type="button" class="sample-chip" data-name="{{ s.name }}">{{ s.name }}</button>
+          {% endfor %}
+        </div>
+      </section>
+
+      <div id="message" class="message" role="status">
+      </div>
+      <section id="results" class="hidden">
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">STUDENT SNAPSHOT</div>
+            <h2 id="studentTitle">Student overview</h2>
+          </div><span class="demo-badge">SAMPLE DATA</span>
+        </div>
+        <div id="matchList"></div>
+        <div id="studentContent"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    const form = document.getElementById('searchForm');
+    const input = document.getElementById('studentName');
+    const message = document.getElementById('message');
+    const results = document.getElementById('results');
+    const content = document.getElementById('studentContent');
+    const matchList = document.getElementById('matchList');
+    let sentimentChart = null;
+    let topicChart = null;
+
+    document.querySelectorAll('.sample-chip').forEach(btn => {
+      btn.addEventListener('click', () => { input.value = btn.dataset.name; searchStudent(); });
+    });
+    form.addEventListener('submit', e => { e.preventDefault(); searchStudent(); });
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+    }
+    function sentimentClass(label) { return label.toLowerCase(); }
+
+    async function searchStudent() {
+      const name = input.value.trim();
+      if (!name) { message.textContent = 'Please enter a student name.'; results.classList.add('hidden'); return; }
+      message.textContent = 'Searching the local sample dataset…';
+      results.classList.add('hidden');
+      try {
+        const response = await fetch('/api/student?name=' + encodeURIComponent(name));
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Search failed.');
+        if (!data.matches.length) {
+          message.textContent = 'No matching sample student found. Try one of the sample names above.';
+          return;
+        }
+        message.textContent = `${data.count} matching sample record${data.count === 1 ? '' : 's'} found.`;
+        results.classList.remove('hidden');
+        if (data.count > 1) {
+          matchList.innerHTML = `<div class="match-picker"><span>Multiple matches — choose a profile:</span>${data.matches.map((s, i) => `<button class="sample-chip" data-index="${i}">${escapeHtml(s.name)}</button>`).join('')}</div>`;
+          matchList.querySelectorAll('button').forEach(b => b.addEventListener('click', () => renderStudent(data.matches[Number(b.dataset.index)])));
+        } else matchList.innerHTML = '';
+        renderStudent(data.matches[0]);
+      } catch (error) {
+        message.textContent = error.message;
+      }
+    }
+
+    function renderStudent(s) {
+      document.getElementById('studentTitle').textContent = s.name;
+      const initials = s.name.split(' ').map(x => x[0]).slice(0, 2).join('').toUpperCase();
+      const sc = s.summary.sentiment_counts;
+      const topics = s.summary.topics;
+      const topTopic = topics.length ? topics[0].topic : 'Not detected';
+      content.innerHTML = `
+    <div class="profile-card" id="profile">
+      <div class="profile-main"><div class="profile-avatar">${escapeHtml(initials)}</div><div><h3>${escapeHtml(s.name)}</h3><p>${escapeHtml(s.course)} · ${escapeHtml(s.year)}</p><div class="profile-tags"><span>${escapeHtml(s.sample_handle)}</span><span>Fictional demo profile</span></div></div></div>
+      <div class="profile-detail"><span>Data source</span><strong>${escapeHtml(s.source)}</strong></div>
+      <div class="profile-detail"><span>Bio</span><strong>${escapeHtml(s.bio)}</strong></div>
+    </div>
+    <div class="metric-grid">
+      <div class="metric-card"><span class="metric-label">Sample posts</span><strong>${s.summary.post_count}</strong><small>Included in this demo</small><div class="metric-symbol blue">▤</div></div>
+      <div class="metric-card"><span class="metric-label">Likes shown</span><strong>${s.summary.total_likes}</strong><small>Sum across sample posts</small><div class="metric-symbol purple">♡</div></div>
+      <div class="metric-card"><span class="metric-label">Comments shown</span><strong>${s.summary.total_comments}</strong><small>Sum across sample posts</small><div class="metric-symbol orange">◌</div></div>
+      <div class="metric-card"><span class="metric-label">Frequent topic</span><strong class="topic-metric">${escapeHtml(topTopic)}</strong><small>Keyword-based indicator</small><div class="metric-symbol green">⌁</div></div>
+    </div>
+    <div class="chart-grid">
+      <div class="panel"><div class="panel-heading"><div><h3>Text sentiment indicators</h3><p>Keyword counts across visible sample posts</p></div><span class="chart-tag">RULE-BASED</span></div><div class="chart-wrap"><canvas id="sentimentChart" aria-label="Sentiment chart"></canvas></div><div class="legend-row"><span><i class="dot positive"></i>Positive</span><span><i class="dot neutral"></i>Neutral</span><span><i class="dot negative"></i>Negative</span></div></div>
+      <div class="panel"><div class="panel-heading"><div><h3>Topics mentioned</h3><p>Topics detected by matching keywords</p></div></div><div class="chart-wrap"><canvas id="topicChart" aria-label="Topics chart"></canvas></div></div>
+    </div>
+    <div class="panel posts-panel" id="posts"><div class="panel-heading"><div><h3>Post-by-post analysis</h3><p>Text, date, engagement and transparent labels</p></div><span class="post-count">${s.posts.length} POSTS</span></div>
+      <div class="post-list">${s.posts.map(p => `<article class="post"><div class="post-top"><div class="post-platform"><span class="platform-icon">${escapeHtml(p.platform[0])}</span><div><strong>${escapeHtml(p.platform)}</strong><small>${escapeHtml(p.date)}</small></div></div><span class="sentiment ${sentimentClass(p.sentiment.label)}">${escapeHtml(p.sentiment.label)}</span></div><p class="post-text">${escapeHtml(p.text)}</p><div class="post-footer"><span>♡ ${p.likes} likes</span><span>◌ ${p.comments} comments</span><div class="post-topics">${p.topics.length ? p.topics.map(t => `<span>${escapeHtml(t.topic)}</span>`).join('') : '<span>Other / no topic match</span>'}</div></div><div class="signal-note">Keyword hits: +${p.sentiment.positive_hits} positive · −${p.sentiment.negative_hits} negative</div></article>`).join('')}</div>
+    </div>
+    `;
+      if (sentimentChart) sentimentChart.destroy();
+      if (topicChart) topicChart.destroy();
+      sentimentChart = new Chart(document.getElementById('sentimentChart'), {
+        type: 'doughnut',
+        data: { labels: ['Positive', 'Neutral', 'Negative'], datasets: [{ data: [sc.Positive, sc.Neutral, sc.Negative], backgroundColor: ['#20b486', '#a5b4fc', '#f07d66'], borderWidth: 0, hoverOffset: 5 }] },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '68%', plugins: { legend: { display: false } } }
+      });
+      topicChart = new Chart(document.getElementById('topicChart'), {
+        type: 'bar',
+        data: { labels: topics.map(t => t.topic), datasets: [{ label: 'Keyword mentions', data: topics.map(t => t.mentions), backgroundColor: '#7c83f6', borderRadius: 6, maxBarThickness: 26 }] },
+        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#edf0f5' } }, y: { grid: { display: false } } } }
+      });
+      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  </script>
+</body>
+
+</html>
